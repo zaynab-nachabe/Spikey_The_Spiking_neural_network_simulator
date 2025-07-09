@@ -253,35 +253,26 @@ class NeuralSimulation:
         self.plot_weights(input_spikes)
         
     def plot_weights(self, input_spikes):
-        """Plot the synaptic weights after learning"""
-        # Show weights after learning
         print("Synaptic weights after learning:")
         all_weights = []
         weight_labels = []
         
-        # The get method has different signatures in different backends
         for i, proj in enumerate(self.input_to_excitatory_projections):
             try:
-                # Try different approaches based on the backend
                 try:
-                    # For some backends, like NEST
                     weights = proj.get('weight')
                 except TypeError:
                     try:
-                        # For Brian2 backend
                         weights = proj.get('weight', format='list')
                     except:
-                        # Try with array format
                         weights = proj.get('weight', format='array')
                 
                 print(f"Input {i+1} to Excitatory weights: {weights}")
                 
-                # Store weights for plotting if this input had spikes
                 if len(input_spikes[i]) > 0:
                     if weights is not None and len(weights) > 0:
-                        # Convert to flat numpy array for consistent handling
                         if isinstance(weights, list):
-                            if isinstance(weights[0], tuple):  # List of (source, target, weight) tuples
+                            if isinstance(weights[0], tuple):
                                 w_array = np.array([w for _, _, w in weights])
                             else:
                                 w_array = np.array(weights)
@@ -293,21 +284,18 @@ class NeuralSimulation:
             except Exception as e:
                 print(f"Couldn't retrieve weights for Input {i+1}: {str(e)}")
         
-        # Create a weights visualization figure
         try:
-            if all_weights:  # Only create plot if we have weights to show
-                # Use the simplest approach
-                plt.figure("Synaptic Weights")  # Name the figure for easy identification
+            if all_weights:
+                plt.figure("Synaptic Weights")
                 plt.boxplot(all_weights, labels=weight_labels)
                 plt.title("Synaptic Weights after Learning")
                 plt.xlabel("Input")
                 plt.ylabel("Weight")
                 plt.grid(True)
                 
-                # This will display the figure
                 plt.show(block=False)
                 
-                print("Weight visualization created successfully")
+                print("Weight visualization created successfully!")
             else:
                 print("No weights available to visualize")
             
@@ -322,7 +310,6 @@ class NeuralSimulation:
             pass
         print("Simulation complete.")
 
-# Function to run a complete simulation
 def run_simulation(params, input_spikes, colors, duration):
     """
     Run a full neural network simulation
@@ -337,19 +324,10 @@ def run_simulation(params, input_spikes, colors, duration):
     bool: Whether the simulation was successful
     """
     try:
-        # Create simulation object
         simulation = NeuralSimulation()
-        
-        # Setup simulation
         simulation.setup(params, input_spikes, duration)
-        
-        # Run simulation
         simulation.run()
-        
-        # Plot results
         simulation.plot_results(params, input_spikes, colors)
-        
-        # End simulation
         simulation.end()
         
         return True
@@ -358,7 +336,6 @@ def run_simulation(params, input_spikes, colors, duration):
         import traceback
         traceback.print_exc()
         try:
-            # Try to clean up
             simulation.end()
         except:
             pass
