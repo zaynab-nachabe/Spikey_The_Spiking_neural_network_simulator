@@ -4,7 +4,7 @@ import logging
 from matplotlib.widgets import TextBox, Slider, Button
 import random
 import traceback
-from simulation import run_simulation
+from spikey.simulation import run_simulation
 
 #graphic tool to observe parameter's affects on the network
 # let's start with the parameters : v_rest, v_tresh, tau_m, tau_refrac, tau_syn_E, tau_syn_I, cm, e_rev_E, e_rev_I
